@@ -1,7 +1,7 @@
 
 #include "thrd_pool.h"
 #include <stdlib.h>
-
+#include <errno.h>
 
 static int thrd_pool_loop(void* data)
 {
@@ -102,7 +102,7 @@ errno_t thrd_pool_init(struct thrd_pool* thrd_pool, size_t tasksCapacity, size_t
 
         for (size_t i = 0; i < num_threads_created; i++)
         {
-            thrd_join(&thrd_pool->threads[i], NULL);
+            thrd_join(thrd_pool->threads[i], NULL);
         }
 
         task_queue_destroy(&thrd_pool->task_queue);

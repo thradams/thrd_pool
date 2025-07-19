@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+ #include <stddef.h>
 
 typedef int errno_t;
 
@@ -14,7 +15,12 @@ enum task_action
 struct task
 {
   void (*function)(enum task_action action, void* capture);  
-  __declspec(align(8)) char small_memory[sizeof(int)*100];
+  #ifdef _MSC_VER 
+   __declspec(align(8))
+  #else
+  _Alignas(max_align_t) 
+  #endif
+   char small_memory[sizeof(int)*100];
 };
 
 

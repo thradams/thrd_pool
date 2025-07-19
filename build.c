@@ -1,5 +1,8 @@
 /*
   cl build.c && build
+
+  gcc build.c -o build && ./build
+
 */
 
 #include <stdlib.h>
@@ -14,5 +17,8 @@ int main()
 {
 #ifdef _MSC_VER    
     system("cl /std:clatest  /utf-8 -o main " SRC);
+#endif
+#ifdef __linux__    
+    system("gcc -o main -std=c2x" SRC);
 #endif
 }

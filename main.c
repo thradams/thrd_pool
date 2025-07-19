@@ -7,7 +7,7 @@ struct thrd_pool global_thrd_pool = { 0 };
 struct Capture { int i; } capture = { 1 };
 void func(enum task_action action, void* data)
 {
-    typeof(capture)* captured = data;
+    struct Capture * captured = data;
     printf("%d\n", captured->i);
 }
 
