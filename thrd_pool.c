@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 
-static void thrd_pool_loop(void* data)
+static int thrd_pool_loop(void* data)
 {
     struct thrd_pool* thrd_pool = data;
 
@@ -32,7 +32,7 @@ static void thrd_pool_loop(void* data)
                 copy.function(TASK_RUN, &copy.small_memory);
         }
     }
-
+    return 0;
 }
 
 
