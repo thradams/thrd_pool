@@ -7,24 +7,24 @@
 
 
 int task_queue_push(struct task_queue* task_queue,
-    void (*function)(enum task_action action, void* capture),
+    void (*function)(errno_t error, void* capture),
     void* capture,
     size_t capture_size)
 {
     assert(task_queue->capacity > 0);
-    enum task_action action = TASK_CANCELED;
+    errno_t error = ECANCELED ;
 
     if (1)
     {
         if (capture_size > sizeof(task_queue->head->small_memory))
         {
-            action = TASK_CANCELED;
+            error = ECANCELED ;
             goto error;
         }
 
         if (task_queue->count >= task_queue->capacity)
         {
-            action = TASK_FULL;
+            error = ENOSPC;
             goto error;
         }
 
@@ -33,7 +33,7 @@ int task_queue_push(struct task_queue* task_queue,
             task_queue->tasks = calloc(task_queue->capacity, sizeof(struct task));
             if (task_queue->tasks == NULL)
             {
-                action = TASK_FULL;
+                error = ENOMEM;
                 goto error;
             }         
             task_queue->head = task_queue->tasks;
@@ -52,7 +52,7 @@ int task_queue_push(struct task_queue* task_queue,
     }
     else error:
     {
-        function(action, capture);
+        function(error, capture);
         return 1;
     }
     return 0;
@@ -83,7 +83,7 @@ void task_queue_destroy(struct task_queue* ptask_queue)
     struct task* ptask = task_queue_pop(ptask_queue);
     while (ptask)
     {
-        ptask->function(TASK_CANCELED, &ptask->small_memory);
+        ptask->function(ECANCELED , &ptask->small_memory);
         ptask = task_queue_pop(ptask_queue);
     }
     free(ptask_queue->tasks);

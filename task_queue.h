@@ -4,20 +4,13 @@
 
 typedef int errno_t;
 
-enum task_action
-{
-  TASK_CANCELED = 1,
-  TASK_FULL = 2,
-  TASK_RUN = 3
-};
-
 #ifdef _MSC_VER 
 typedef double max_align_t;
 #endif
 
 struct task
 {
-  void (*function)(enum task_action action, void* capture);  
+  void (*function)(errno_t error, void* capture);  
   
   _Alignas(max_align_t) 
   char small_memory[sizeof(int)*100];
@@ -35,7 +28,7 @@ struct task_queue
 
 [[nodiscard]]
 errno_t task_queue_push(struct task_queue * task_queue,
-                        void (*function)(enum task_action action, void* capture),
+                        void (*function)(errno_t error, void* capture),
                         void * capture,
                         size_t capture_size);
 [[nodiscard]]

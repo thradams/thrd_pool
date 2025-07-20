@@ -29,7 +29,7 @@ static int thrd_pool_loop(void* data)
             mtx_unlock(&thrd_pool->mutex);
 
             if (p)
-                copy.function(TASK_RUN, &copy.small_memory);
+                copy.function(0, &copy.small_memory);
         }
     }
     return 0;
@@ -112,7 +112,7 @@ errno_t thrd_pool_init(struct thrd_pool* thrd_pool, size_t tasksCapacity, size_t
 }
 
 errno_t thrd_pool_push(struct thrd_pool* thrd_pool,
-    void (*function)(enum task_action action, void* capture),
+    void (*function)(errno_t error, void* capture),
     void* capture,
     size_t capture_size)
 {
@@ -140,7 +140,7 @@ errno_t thrd_pool_push(struct thrd_pool* thrd_pool,
     }
     else error:
     {
-        function(TASK_CANCELED, capture);
+        function(ECANCELED , capture);
     }
 
     return result;
@@ -180,7 +180,7 @@ void thrd_pool_join(struct thrd_pool* thrd_pool)
     task_queue_destroy(&thrd_pool->task_queue);
 }
 
-errno_t async(void (*function)(enum task_action action, void* capture),
+errno_t async(void (*function)(errno_t error, void* capture),
     void* capture,
     size_t capture_size)
 {
