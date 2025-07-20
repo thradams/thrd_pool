@@ -21,14 +21,13 @@
 
 int main()
 {
-#ifdef _MSC_VER    
-
-#ifdef CAKE
+  #ifdef CAKE
     system("cake main.c -o main2.c");
 #endif
 
-    system("cl /std:clatest  /utf-8 -o main " SRC);
 
+#ifdef _MSC_VER    
+    system("cl /std:clatest  /utf-8 -o main " SRC);
 #endif
 #ifdef __linux__    
     system("gcc -o main -std=c2x" SRC);
