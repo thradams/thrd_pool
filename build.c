@@ -30,6 +30,6 @@ int main()
     system("cl /std:clatest  /utf-8 -o main " SRC);
 #endif
 #ifdef __linux__    
-    system("gcc -o main -std=c2x" SRC);
+    system("gcc -g -o main -std=c2x" SRC);
 #endif
 }

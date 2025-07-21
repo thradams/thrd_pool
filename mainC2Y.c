@@ -4,27 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-struct Capture
-{
-    char *user;
-    char *password;
-    void (*callback)(int result, char *data, void *);
-    void *data;
-};
-
 struct thrd_pool global_thrd_pool = {0};
-
-void do_this_execute(errno_t error, void *data)
-{
-    char *result = "result";
-
-    struct Capture *captured = data;
-    captured->callback(error, result, captured->data);
-
-    free(captured->data);
-    free(captured->user);
-    free(captured->password);
-}
 
 errno_t do_this_async(char *user,
                       char *password,
@@ -32,6 +12,14 @@ errno_t do_this_async(char *user,
                       void *data,
                       size_t data_size)
 {
+
+    struct Capture
+    {
+        char *user;
+        char *password;
+        void (*callback)(int result, char *data, void *);
+        void *data;
+    };
     struct Capture capture = {0};
 
     if (1)
@@ -54,6 +42,17 @@ errno_t do_this_async(char *user,
         }
 
         memccpy(capture.data, data, 1, data_size);
+        void do_this_execute(errno_t error, void *data)
+        {
+            char *result = "result";
+
+            struct Capture *captured = data;
+            captured->callback(error, result, captured->data);
+
+            free(captured->data);
+            free(captured->user);
+            free(captured->password);
+        }
 
         errno_t e = async(do_this_execute, &capture, sizeof capture);
     }
@@ -66,16 +65,15 @@ errno_t do_this_async(char *user,
     }
 }
 
-void then_do_that(int result, char *content, void *data)
-{
-    printf("Result: %d, Content: %s\n", result, content);
-}
-
 int main()
 {
     if (thrd_pool_init(&global_thrd_pool, 100, 10) != 0)
         return 1;
 
+    void then_do_that(int result, char *content, void *data)
+    {
+        printf("Result: %d, Content: %s\n", result, content);
+    }
     do_this_async("username", "password", then_do_that, NULL, 0);
 
     printf("waiting 5s.\n");

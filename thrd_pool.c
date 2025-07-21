@@ -29,7 +29,7 @@ static int thrd_pool_loop(void* data)
             mtx_unlock(&thrd_pool->mutex);
 
             if (p)
-                copy.function(0, &copy.small_memory);
+                copy.function(0, copy.small_memory);
         }
     }
     return 0;
