@@ -18,6 +18,22 @@
 		  "reveal": "always",
 		  "panel": "new"
 		}
+	  },
+      {
+		"label": "Run Cake before build",
+		"type": "shell",
+		"command": "gcc -DCAKE build.c -o build && ./build",
+		"options" : {
+		"cwd" : "${workspaceFolder}"
+		},
+		"windows": {
+		  "command": "cl build.c && build"
+		},
+		"group": "build",
+		"presentation": {
+		  "reveal": "always",
+		  "panel": "new"
+		}
 	  }
 	]
   }

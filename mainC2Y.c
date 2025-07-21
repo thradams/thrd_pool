@@ -1,3 +1,9 @@
+
+/*
+    THIS FILE IS NOT PART OF BUILD
+    IT SHOWS POTENTIAL FEAUTURES IN C2Y
+*/
+
 #include "thrd_pool.h"
 #include <stdio.h>
 #include <string.h>
@@ -70,11 +76,11 @@ int main()
     if (thrd_pool_init(&global_thrd_pool, 100, 10) != 0)
         return 1;
 
-    void then_do_that(int result, char *content, void *data)
-    {
-        printf("Result: %d, Content: %s\n", result, content);
-    }
-    do_this_async("username", "password", then_do_that, NULL, 0);
+    do_this_async("username", "password",
+                  (void(int result, char *content, void *data))
+    { 
+        printf("Result: %d, Content: %s\n", result, content); 
+    }, NULL, 0);
 
     printf("waiting 5s.\n");
     struct timespec duration = {.tv_sec = 5};

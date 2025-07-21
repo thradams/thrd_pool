@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 #ifdef CAKE
-#define MAIN_FILE " main2.c "
+#define MAIN_FILE " mainC89.c "
 #else
 #define MAIN_FILE " main.c "
 #endif
@@ -22,7 +22,7 @@
 int main()
 {
   #ifdef CAKE
-    system("cake main.c -o main2.c");
+    system("cake mainC2Y.c -o mainC89.c");
 #endif
 
 
