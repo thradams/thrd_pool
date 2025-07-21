@@ -19,14 +19,19 @@ errno_t do_this_async(char *user,
                       size_t data_size)
 {
 
-    struct Capture
-    {
+    struct  Capture{
         char *user;
         char *password;
         void (*callback)(int result, char *data, void *);
         void *data;
-    };
-    struct Capture capture = {0};
+    } capture = {0};
+    
+    void capture_free(struct Capture* capture) {
+        free(capture->data);
+        free(capture->password);
+        free(capture->user);
+    }
+
 
     if (1)
     {
@@ -45,29 +50,23 @@ errno_t do_this_async(char *user,
             capture.data = malloc(data_size);
             if (capture.data == NULL)
                 goto error;
+            memccpy(capture.data, data, 1, data_size);
         }
 
-        memccpy(capture.data, data, 1, data_size);
-        void do_this_execute(errno_t error, void *data)
+        errno_t e = async((void (errno_t error, void *data))
         {
+            struct Capture *captured = data;            
             char *result = "result";
-
-            struct Capture *captured = data;
             captured->callback(error, result, captured->data);
-
-            free(captured->data);
-            free(captured->user);
-            free(captured->password);
-        }
-
-        errno_t e = async(do_this_execute, &capture, sizeof capture);
+            capture_free(captured);
+            
+        }, &capture, sizeof capture);
     }
-    else
-    error:
+    else error:
     {
-        free(capture.data);
-        free(capture.password);
-        free(capture.user);
+        capture_free(&capture);
+        /*always called*/         
+        callback(1, "", data);
     }
 }
 

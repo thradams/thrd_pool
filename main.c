@@ -63,6 +63,7 @@ errno_t do_this_async(char *user,
         free(capture.data);
         free(capture.password);
         free(capture.user);
+        callback(1, "", data);
     }
 }
 
